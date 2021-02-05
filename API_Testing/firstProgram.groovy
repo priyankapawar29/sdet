@@ -1,0 +1,4 @@
+package testPrograms
+
+class firstProgram {
+}
