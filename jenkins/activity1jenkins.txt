@@ -1,0 +1,30 @@
+pipeline 
+{
+   agent any
+   environment {
+      JAVA_HOME='usr/bin/jvm/java'
+   }
+   stages{
+          Stage('Build')
+         {
+          steps{
+            sh 'mvn compile'
+          }
+         }
+         stage('Test'){
+         steps{
+            wrap([$class: 'Xvfb', displayName: 3, timeout: 10,displayNameOffset: 1,
+                  debug: true]){
+                     sh 'mvn test'
+	}
+}
+}
+        stage('Publish')
+	{
+           steps{
+                    step([$class: 'Publisher',reportFilenamePattern: '**/testng-results.xml',escapeTestDescp: true,escapeExceptionMsg: true,unstableSkips: 100,
+                           unstableFails: 0,failedSkips: 100,failedFails: 100, thresholdMode: 2])
+                 }
+	}
+	}
+}        
